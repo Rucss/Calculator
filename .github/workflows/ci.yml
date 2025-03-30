@@ -1,0 +1,28 @@
+name: CI Pipeline for Calculator
+
+on: [push, pull_request]  # Runs on every push and pull request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3  # Fetches code from GitHub repo
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Run JavaScript Lint Check
+        run: |
+          npm install eslint -g
+          eslint script.js || echo "Lint warnings found"
+
+      - name: Deploy to GitHub Pages (Optional)
+        if: github.ref == 'refs/heads/main'  # Deploy only on main branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .  # Deploy root directory
