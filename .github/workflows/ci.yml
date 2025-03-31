@@ -24,9 +24,14 @@ jobs:
       - name: Run JavaScript Lint Check
         run: npx eslint script.js || echo "Lint warnings found"
 
+      - name: Prepare GitHub Pages Deployment
+        run: |
+          mkdir public  # Create a directory for deployment
+          cp index.html public/  # Copy index.html to the deployment directory
+
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'  # Deploy only on main branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_access_token: ${{ secrets.GH_PAT }}  # Use PAT instead of default token
-          publish_dir: ./public  # Ensure this is the correct build directory
+          publish_dir: ./public  # Deploy only the public directory
