@@ -1,37 +1,18 @@
 name: CI Pipeline for Calculator
 
-on: [push, pull_request]  # Runs on every push and pull request
-
-permissions:
-  contents: write  # Grant GitHub Actions permission to push commits
+on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: windows-latest  # Use Windows instead of Ubuntu
-
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3  # Fetches code from GitHub repo
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install Dependencies
-        run: npm install  # Use install instead of ci on Windows
-
-      - name: Run JavaScript Lint Check
-        run: npx eslint script.js || echo "Lint warnings found"
-
-      - name: Prepare GitHub Pages Deployment
-        run: |
-          mkdir public  # Create a directory for deployment
-          cp index.html public/  # Copy index.html to the deployment directory
+        uses: actions/checkout@v3
 
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'  # Deploy only on main branch
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
-          personal_access_token: ${{ secrets.GH_PAT }}  # Use PAT instead of default token
-          publish_dir: ./public  # Deploy only the public directory
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .  # Deploy root directory
