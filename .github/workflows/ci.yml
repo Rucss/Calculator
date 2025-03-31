@@ -1,18 +1,23 @@
 name: CI Pipeline for Calculator
 
-on: [push, pull_request]
+on: [push, pull_request]  # Runs on every push and pull request
+
+permissions:
+  contents: write  # Allows GitHub Actions to push commits
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    
+  deploy:
+    runs-on: windows-latest  # Use Windows as the runner
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Fetches the latest code
 
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'  # Deploy only from the main branch
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .  # Deploy root directory
+          personal_access_token: ${{ secrets.GH_PAT }}  # Use PAT for authentication
+          publish_dir: .  # Deploy from the root directory
+          keep_files: false  # Ensures only index.html is deployed
+          exclude_assets: '*'  # Exclude everything except specified files
